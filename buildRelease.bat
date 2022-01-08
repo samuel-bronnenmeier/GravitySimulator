@@ -64,6 +64,66 @@ C:\Users\Samuel\cpp\GravSim\src\Planet.cpp ^
 
 echo Compiled Planet.cpp to Planet.o...
 
+C:\mingw-w64\mingw32\bin\g++.exe ^
+-c ^
+C:\Users\Samuel\cpp\GravSim\src\Dialog.cpp ^
+-I C:\Users\Samuel\cpp\GravSim\include ^
+-I C:\Users\Samuel\cpp\mingw_dev_lib\SDL2\include\SDL2 ^
+-I C:\Users\Samuel\cpp\mingw_dev_lib\SDL_image\include\SDL2 ^
+-I C:\Users\Samuel\cpp\mingw_dev_lib\SDL_ttf\include\SDL2 ^
+-w ^
+-o C:\Users\Samuel\cpp\GravSim\releaseBuild\bin\Dialog.o
+
+echo Compiled Dialog.cpp to Dialog.o...
+
+C:\mingw-w64\mingw32\bin\g++.exe ^
+-c ^
+C:\Users\Samuel\cpp\GravSim\src\Button.cpp ^
+-I C:\Users\Samuel\cpp\GravSim\include ^
+-I C:\Users\Samuel\cpp\mingw_dev_lib\SDL2\include\SDL2 ^
+-I C:\Users\Samuel\cpp\mingw_dev_lib\SDL_image\include\SDL2 ^
+-I C:\Users\Samuel\cpp\mingw_dev_lib\SDL_ttf\include\SDL2 ^
+-w ^
+-o C:\Users\Samuel\cpp\GravSim\releaseBuild\bin\Button.o
+
+echo Compiled Button.cpp to Button.o...
+
+C:\mingw-w64\mingw32\bin\g++.exe ^
+-c ^
+C:\Users\Samuel\cpp\GravSim\src\InputField.cpp ^
+-I C:\Users\Samuel\cpp\GravSim\include ^
+-I C:\Users\Samuel\cpp\mingw_dev_lib\SDL2\include\SDL2 ^
+-I C:\Users\Samuel\cpp\mingw_dev_lib\SDL_image\include\SDL2 ^
+-I C:\Users\Samuel\cpp\mingw_dev_lib\SDL_ttf\include\SDL2 ^
+-w ^
+-o C:\Users\Samuel\cpp\GravSim\releaseBuild\bin\InputField.o
+
+echo Compiled InputField.cpp to InputField.o...
+
+C:\mingw-w64\mingw32\bin\g++.exe ^
+-c ^
+C:\Users\Samuel\cpp\GravSim\src\Row.cpp ^
+-I C:\Users\Samuel\cpp\GravSim\include ^
+-I C:\Users\Samuel\cpp\mingw_dev_lib\SDL2\include\SDL2 ^
+-I C:\Users\Samuel\cpp\mingw_dev_lib\SDL_image\include\SDL2 ^
+-I C:\Users\Samuel\cpp\mingw_dev_lib\SDL_ttf\include\SDL2 ^
+-w ^
+-o C:\Users\Samuel\cpp\GravSim\releaseBuild\bin\Row.o
+
+echo Compiled Row.cpp to Row.o...
+
+C:\mingw-w64\mingw32\bin\g++.exe ^
+-c ^
+C:\Users\Samuel\cpp\GravSim\src\Utils.cpp ^
+-I C:\Users\Samuel\cpp\GravSim\include ^
+-I C:\Users\Samuel\cpp\mingw_dev_lib\SDL2\include\SDL2 ^
+-I C:\Users\Samuel\cpp\mingw_dev_lib\SDL_image\include\SDL2 ^
+-I C:\Users\Samuel\cpp\mingw_dev_lib\SDL_ttf\include\SDL2 ^
+-w ^
+-o C:\Users\Samuel\cpp\GravSim\releaseBuild\bin\Utils.o
+
+echo Compiled Utils.cpp to Utils.o...
+
 echo.
 
 C:\mingw-w64\mingw32\bin\windres.exe ^
@@ -90,6 +150,11 @@ C:\Users\Samuel\cpp\GravSim\releaseBuild\bin\Simulation.o ^
 C:\Users\Samuel\cpp\GravSim\releaseBuild\bin\Window.o ^
 C:\Users\Samuel\cpp\GravSim\releaseBuild\bin\Texture.o ^
 C:\Users\Samuel\cpp\GravSim\releaseBuild\bin\Planet.o ^
+C:\Users\Samuel\cpp\GravSim\releaseBuild\bin\Dialog.o ^
+C:\Users\Samuel\cpp\GravSim\releaseBuild\bin\Button.o ^
+C:\Users\Samuel\cpp\GravSim\releaseBuild\bin\InputField.o ^
+C:\Users\Samuel\cpp\GravSim\releaseBuild\bin\Row.o ^
+C:\Users\Samuel\cpp\GravSim\releaseBuild\bin\Utils.o ^
 C:\Users\Samuel\cpp\GravSim\releaseBuild\bin\version.res ^
 -L C:\Users\Samuel\cpp\mingw_dev_lib\SDL2\lib ^
 -L C:\Users\Samuel\cpp\mingw_dev_lib\SDL_image\lib ^
