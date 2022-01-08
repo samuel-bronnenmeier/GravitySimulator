@@ -55,12 +55,12 @@ bool LTexture::loadFromFile( std::string path, SDL_Renderer* renderer )
 	return mTexture != NULL;
 }
 
-/*#if defined(SDL_TTF_MAJOR_VERSION)
-bool LTexture::loadFromRenderedText(std::string textureText, SDL_Color textColor)
+#if defined(SDL_TTF_MAJOR_VERSION)
+bool LTexture::loadFromRenderedText(std::string textureText, SDL_Color textColor, TTF_Font* font, SDL_Renderer* renderer)
 {
     free();
 
-    SDL_Surface* textSurface = TTF_RenderText_Solid(gFont, textureText.c_str(), textColor);
+    SDL_Surface* textSurface = TTF_RenderText_Solid(font, textureText.c_str(), textColor);
 
     if (textSurface == NULL)
     {
@@ -68,7 +68,7 @@ bool LTexture::loadFromRenderedText(std::string textureText, SDL_Color textColor
     }
     else
     {
-        mTexture = SDL_CreateTextureFromSurface(gRenderer, textSurface);
+        mTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
         
         if (mTexture == NULL)
         {
@@ -87,7 +87,7 @@ bool LTexture::loadFromRenderedText(std::string textureText, SDL_Color textColor
     return mTexture != NULL;
     
 }
-#endif*/
+#endif
 
 void LTexture::free()
 {

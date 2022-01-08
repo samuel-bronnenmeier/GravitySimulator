@@ -84,3 +84,12 @@ LVector2f LPlanet::getPos()
 {
     return {x, y};
 }
+
+LPlanet LPlanet::copy()
+{
+    LPlanet a;
+
+    a.init(x, y, radius, velX, velY, mMass);
+
+    return a;
+}

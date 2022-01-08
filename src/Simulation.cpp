@@ -23,12 +23,11 @@ bool LSimulation::init()
             printf("IMG_Init failed. SDL Error: %s", IMG_GetError());
         }
 
-        /*if (TTF_Init() == -1)
+        if (TTF_Init() == -1)
         {
             mCode = ERROR_TYPE_TTF;
             success = false;
-        }*/
-        
+        }
         
         mWindow = new LWindow();
 
@@ -49,12 +48,22 @@ bool LSimulation::init()
             {
                 mCircle = new LTexture();
 
-                mPlanets = new LPlanet[PLANETS];
+                mNumOfPlans = PLANETS;
+
+                mPlanets = new LPlanet[mNumOfPlans];
                 
                 mPlanets[0].init((SCREEN_WIDTH / 2) - 4 * 10, SCREEN_HEIGHT / 2, 20, 0.0, -1.0, 50);
                 mPlanets[1].init((SCREEN_WIDTH / 2) + 4 * 10, SCREEN_HEIGHT / 2, 20, 0.0, 1.0, 50);
                 mPlanets[2].init((SCREEN_WIDTH / 2) + 330 - 1 * 5, SCREEN_HEIGHT / 2, 10, 0.0, -0.5, 1);
                 mPlanets[3].init((SCREEN_WIDTH / 2) + 330 + 1 * 5, SCREEN_HEIGHT / 2, 10, 0.0, -1.5, 1);
+
+                mMouse = new Mouse();
+
+                mMouse->x = 0;
+                mMouse->y = 0;
+                mMouse->clicked = false;
+
+                mDialog = NULL;
             }
             
             
@@ -76,6 +85,27 @@ bool LSimulation::loadMedia()
         success = false;
     }
 
+    mFont.small = TTF_OpenFont("res/Roboto-Regular.ttf", 12);
+    if( mFont.small == NULL )
+    {
+        printf("Failed to load standard font! SDL_ttf Error: %s\n", TTF_GetError());
+        success = false;
+    }
+
+    mFont.medium = TTF_OpenFont("res/Roboto-Regular.ttf", 17);
+    if( mFont.medium == NULL )
+    {
+        printf("Failed to load standard font! SDL_ttf Error: %s\n", TTF_GetError());
+        success = false;
+    }
+
+    mFont.big = TTF_OpenFont("res/Roboto-Regular.ttf", 25);
+    if( mFont.big == NULL )
+    {
+        printf("Failed to load standard font! SDL_ttf Error: %s\n", TTF_GetError());
+        success = false;
+    }
+
     return success;
 }
 
@@ -85,6 +115,8 @@ ERROR_TYPE LSimulation::terminate()
 
     mCircle->free();
 
+    delete mDialog;
+
     SDL_DestroyRenderer(mRenderer);
     mRenderer = NULL;
 
@@ -92,7 +124,7 @@ ERROR_TYPE LSimulation::terminate()
     mWindow = NULL;
 
     IMG_Quit();
-    //TTF_Quit();
+    TTF_Quit();
     SDL_Quit();
 
     return mCode;
@@ -110,6 +142,22 @@ void LSimulation::handleEvents()
         }
 
         mWindow->handleEvent(e);
+
+        if (e.type == SDL_MOUSEBUTTONUP)
+        {
+            int x, y;
+            SDL_GetMouseState(&x, &y);
+
+            mMouse->x = x;
+            mMouse->y = y;
+
+            mMouse->clicked = true;
+        }
+
+        if (mDialog != NULL)
+        {
+            mDialog->handleEvent(e);
+        }
         
     }
     
@@ -117,18 +165,19 @@ void LSimulation::handleEvents()
 
 void LSimulation::update()
 {
-    for (int i = 0; i < PLANETS; i++)
+
+    for (int i = 0; i < mNumOfPlans; i++)
     {
         mPlanets[i].resetForce();
     }
 
-    for (int i = 0; i < PLANETS; i++)
+    for (int i = 0; i < mNumOfPlans; i++)
     {
-        for (int j = 0; j < PLANETS; j++)
+        for (int j = 0; j < mNumOfPlans; j++)
         {
             if (i != j)
             {
-                LVector2f grav = calculateGravity(mPlanets[i].getMass(), mPlanets[j].getMass(), mPlanets[i].getPos(), mPlanets[j].getPos());
+                LVector2f grav = Utils::calculateGravity(mPlanets[i].getMass(), mPlanets[j].getMass(), mPlanets[i].getPos(), mPlanets[j].getPos());
 
                 mPlanets[i].addForce(grav.x, grav.y);
             }
@@ -137,11 +186,72 @@ void LSimulation::update()
         
     }
     
-    for (int i = 0; i < PLANETS; i++)
+    for (int i = 0; i < mNumOfPlans; i++)
     {
         mPlanets[i].update();
     }
+
+    if (mMouse->clicked == true)
+    {
+        createDialog(mMouse->x, mMouse->y);
+
+        mMouse->clicked = false;
+    }
+
+    if (mDialog != NULL)
+    {
+
+        mDialog->update();
+        
+        if (mDialog->quitRequested())
+        {
+            delete mDialog;
+
+            mDialog = NULL;
+        }
+        else if (mDialog->wasSubmitted())
+        {
+            LPlanet* a = new LPlanet[mNumOfPlans];
+
+            for (int i = 0; i < mNumOfPlans; i++)
+            {
+                a[i] = mPlanets[i];
+            }
+
+            delete mPlanets;
+
+            mNumOfPlans++;
+
+            mPlanets = new LPlanet[mNumOfPlans];
+
+            for (int i = 0; i < mNumOfPlans - 1; i++)
+            {
+                mPlanets[i] = a[i];
+            }
+
+            mPlanets[mNumOfPlans - 1] = *mDialog->createPlanet();
+
+            delete mDialog;
+
+            mDialog = NULL;
+
+        }
+        
+    }    
     
+}
+
+void LSimulation::createDialog(int x, int y)
+{
+
+    if (mDialog == NULL)
+    {
+
+        mDialog = new Dialog();
+
+        mDialog->init(x, y, mFont, mRenderer);
+    }
+
 }
 
 void LSimulation::render()
@@ -151,34 +261,16 @@ void LSimulation::render()
         SDL_SetRenderDrawColor(mRenderer, 0x00, 0x00, 0x00, 0xFF);
         SDL_RenderClear(mRenderer);
 
-        for (int i = 0; i < PLANETS; i++)
+        for (int i = 0; i < mNumOfPlans; i++)
         {
             mPlanets[i].render(mRenderer, mCircle);
         }
-        
+
+        if (mDialog != NULL)
+        {
+            mDialog->render(mRenderer);
+        }        
 
         SDL_RenderPresent(mRenderer);
     }
-}
-
-LVector2f LSimulation::calculateGravity(int pm1, int pm2, LVector2f ppos1, LVector2f ppos2)
-{
-    int r_squared = ((ppos2.x - ppos1.x) * (ppos2.x - ppos1.x)) + ((ppos2.y - ppos1.y) * (ppos2.y - ppos1.y));
-
-    double numGrav = 5 * (((double)pm1 * (double)pm2) / (double)r_squared);
-    if (numGrav > 100.0)
-    {
-        numGrav = 1.0;
-    }
-    
-
-    LVector2f dirVec = {(double)(ppos2.x - ppos1.x), (double)(ppos2.y - ppos1.y)};
-
-    double dist = sqrt((dirVec.x * dirVec.x) + (dirVec.y * dirVec.y));
-
-    LVector2f normedVec = {dirVec.x / dist, dirVec.y / dist};
-
-    LVector2f grav = {normedVec.x * numGrav, normedVec.y * numGrav};
-
-    return grav;
 }
