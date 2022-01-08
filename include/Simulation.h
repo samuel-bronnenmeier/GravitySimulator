@@ -1,5 +1,5 @@
 #include <SDL.h>
-//#include <SDL_ttf.h>
+#include <SDL_ttf.h>
 #include <SDL_image.h>
 
 #include <stdio.h>
@@ -10,6 +10,10 @@
 #include "Texture.h"
 
 #include "Planet.h"
+
+#include "Utils.h"
+
+#include "Dialog.h"
 
 #ifndef SIMULATION_H
 #define SIMULATION_H
@@ -23,11 +27,14 @@ enum ERROR_TYPE
     ERROR_TYPE_TTF
 };
 
+struct Mouse {
+    bool clicked;
+    int x;
+    int y;
+};
+
 //const int SCREEN_WIDTH = 640;
 //const int SCREEN_HEIGHT = 480;
-
-const int SCREEN_WIDTH = 960;
-const int SCREEN_HEIGHT = 720;
 
 const int PLANETS = 4;
 
@@ -54,8 +61,8 @@ public:
     //Render everything
     void render();
 
-    //Calculate gravity from two planets
-    LVector2f calculateGravity(int pm1, int pm2, LVector2f ppos1, LVector2f ppos2);
+    //Create Dialog field
+    void createDialog(int x, int y);
 
     //User requested quit
     bool quit;
@@ -71,8 +78,20 @@ private:
     //The circle texture
     LTexture* mCircle;
 
-    //The test planets
+    //The planets
     LPlanet* mPlanets;
+
+    //The number of planets
+    unsigned int mNumOfPlans;
+
+    //Virtual mouse
+    Mouse* mMouse;
+
+    //Dialog (if shown or not)
+    Dialog* mDialog;
+
+    //Standard font
+    Font mFont;
 
     //The error code
     ERROR_TYPE mCode;

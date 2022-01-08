@@ -35,6 +35,8 @@ public:
 
     int getMass();
 
+    LPlanet copy();
+
     LVector2f getPos();
 
 private:
