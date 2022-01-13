@@ -36,10 +36,12 @@ void Row::handleEvent(SDL_Event &e)
     mField->handleEvent(e);
 }
 
-void Row::update()
+bool Row::update()
 {
     //Update everything accordingly
     mField->update();
+
+    return mField->wannaAct();
 }
 
 void Row::render(SDL_Renderer* renderer)
@@ -69,4 +71,17 @@ void Row::destroy()
 int Row::getValue()
 {
     return mField->getValue();
+}
+
+void Row::setActivation(bool active)
+{
+    if (active)
+    {
+        mField->activate();
+    }
+    else
+    {
+        mField->deactivate();
+    }
+    
 }

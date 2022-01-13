@@ -1,6 +1,7 @@
 #include "SDL.h"
 
 #include <string>
+#include <regex>
 
 #include "Utils.h"
 
@@ -35,6 +36,8 @@ public:
 
     int getValue();
 
+    bool wannaAct();
+
 private:
 
     Point mPos;
@@ -55,6 +58,7 @@ private:
 
     SDL_Renderer* mRenderer_ref;
 
+    bool mWantAct;
 };
 
 #endif

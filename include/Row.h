@@ -20,13 +20,15 @@ public:
 
     void handleEvent(SDL_Event &e);
 
-    void update();
+    bool update();
 
     void render(SDL_Renderer* renderer);
 
     void destroy();
 
     int getValue();
+
+    void setActivation(bool active);
 
 private:
 

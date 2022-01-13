@@ -27,16 +27,16 @@ void InputField::init(int x_, int y_, int width_, int height_, Font font, SDL_Re
 
     mActive = false;
 
-    mValue = "std";
-    mValueTexture->loadFromRenderedText(mValue, {255, 255, 255}, font.medium, renderer);
-
-    SDL_StartTextInput();
+    mValue = "";
+    mValueTexture->loadFromRenderedText(" ", {255, 255, 255}, font.medium, renderer);
 
     mRenderText = false;
 
     mFont = font;
 
     mRenderer_ref = renderer;
+
+    mWantAct = false;
 }
 
 void InputField::handleEvent(SDL_Event &e)
@@ -122,10 +122,18 @@ void InputField::handleEvent(SDL_Event &e)
         if (e.type == SDL_TEXTINPUT)
         {
             
-            if (!(SDL_GetModState() & KMOD_CTRL && (e.text.text[ 0 ] == 'c' ||
-                                                    e.text.text[ 0 ] == 'C' ||
-                                                    e.text.text[ 0 ] == 'v' ||
-                                                    e.text.text[ 0 ] == 'V')))
+            if (!(SDL_GetModState() & KMOD_CTRL && 
+                        (
+                            e.text.text[ 0 ] == 'c' ||
+                            e.text.text[ 0 ] == 'C' ||
+                            e.text.text[ 0 ] == 'v' ||
+                            e.text.text[ 0 ] == 'V'
+                        )
+                    ) &&
+                    (
+                        std::regex_match(e.text.text, std::regex("^-?[0-9]*$"))
+                    )
+                )
             {
                 mValue += e.text.text;
                 mRenderText = true;
@@ -142,17 +150,18 @@ void InputField::handleEvent(SDL_Event &e)
 
 void InputField::update()
 {
-    //Activate when clicked !TODO Move this two layers up
+    //Activate when clicked
+    //TODO Move this two layers up
     if (mouse.buttonUp)
     {
 
         if (mActive)
         {
-            deactivate();
+            mWantAct = false;
         }
         else
         {
-            activate();
+            mWantAct = true;
         }
         
         mouse.buttonUp = false;
@@ -194,7 +203,7 @@ void InputField::render(SDL_Renderer* renderer)
 
     if (mActive)
     {
-        SDL_SetRenderDrawColor(renderer, 0x70, 0x70, 0x70, 0xFF);
+        SDL_SetRenderDrawColor(renderer, 0x55, 0x55, 0x55, 0xFF);
     }
     
     SDL_Rect fillRect = {mPos.x, mPos.y, mWidth, mHeight};
@@ -213,11 +222,13 @@ void InputField::terminate()
 
 void InputField::activate()
 {
+    SDL_StartTextInput();
     mActive = true;
 }
 
 void InputField::deactivate()
 {
+    SDL_StopTextInput();
     mActive = false;
 }
 
@@ -229,4 +240,13 @@ bool InputField::activated()
 int InputField::getValue()
 {
     return std::stoi(mValue);
+}
+
+bool InputField::wannaAct()
+{
+    bool a = mWantAct;
+
+    mWantAct = false;
+
+    return a;
 }

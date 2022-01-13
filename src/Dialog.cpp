@@ -50,7 +50,7 @@ void Dialog::handleEvent(SDL_Event &e)
 {
     if (e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEBUTTONUP)
     {
-        //React to mouse (including shadow?, buttons + textfields)
+        //TODO React to mouse (including shadow?, buttons + textfields)
         for (int i = 0; i < 2; i++)
         {
             buttons[i].handleEvent(e);
@@ -77,7 +77,17 @@ void Dialog::update()
 
     for (int i = 0; i < INPUT_TOTAL; i++)
     {
-        mRows[i].update();
+        if (mRows[i].update())
+        {
+            
+            for (int i = 0; i < INPUT_TOTAL; i++)
+            {
+                mRows[i].setActivation(false);
+            }
+
+            mRows[i].setActivation(true);            
+            
+        }
     }
     
     
